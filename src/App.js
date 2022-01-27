@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios"
+import useLocalStorage from "./useLocalStorage"
+import useUpdateLogger from "./useUpdateLogger"
+import useQuery from "./useQuery"
+import useRandomColor from "./useRandomColor"
 
 function App() {
+  const [name, setName] = useLocalStorage("name", "")
+
+  useUpdateLogger(name)
+
+  const [color, changeColor] = useRandomColor()
+
+  const { response } = useQuery(
+    axios.get("https://foodish-api.herokuapp.com/api/")
+  )
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input
+        type="text"
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+      />
+      <img src={response.image} alt="food image" />
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "#" + color,
+        }}
+      ></div>
+      <p>color: {color}</p>
+      <button onClick={changeColor}>Submit</button>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
